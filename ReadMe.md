@@ -1,3 +1,3 @@
 DAY : 4
-**_Completely done - 17_**
-**_Partial done - 4_**
+**_Completely done - 20_**
+**_Partial done - 5_**
