@@ -1,4 +1,4 @@
-DAY : 14
-**_Completely done - 64_**
+DAY : 16
+**_Completely done - 70_**
 **_Partial done - 12_**
 
