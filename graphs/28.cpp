@@ -1,38 +1,100 @@
-
-// Step 1: Initialize distances from src
-// to all other vertices as INFINITE
-for (int i = 0; i < V; i++)
-    dist[i] = INT_MAX;
-dist[src] = 0;
-
-// Step 2: Relax all edges |V| - 1 times.
-// A simple shortest path from src to any
-// other vertex can have at-most |V| - 1
-// edges
-for (int i = 1; i <= V - 1; i++)
+class Solution
 {
-    for (int j = 0; j < E; j++)
+    int m, n;
+
+public:
+    int longestIncreasingPath(vector<vector<int>> &matrix)
     {
-        int u = graph->edge[j].src;
-        int v = graph->edge[j].dest;
-        int weight = graph->edge[j].weight;
-        if (dist[u] != INT_MAX && dist[u] + weight < dist[v])
-            dist[v] = dist[u] + weight;
+
+        m = matrix.size();
+        n = matrix[0].size();
+
+        pair<int, int> p = {-1, -1};
+
+        int ans = 0;
+
+        // for(int i=m;i>0;i--)
+        // {
+        //     for(int j=n;j>0;j--)
+        //     {
+        //         ans=max(recur({i,j},p,matrix),ans);
+        //     }
+        // }
+
+        vector<vector<int>> dp(m + 1, vector<int>(n + 1, -1));
+        for (int i = m; i > 0; i--)
+        {
+            for (int j = n; j > 0; j--)
+            {
+                ans = max(memo({i, j}, p, matrix, dp), ans);
+            }
+        }
+        return ans;
     }
-}
 
-// Step 3: check for negative-weight cycles.
-// The above step guarantees shortest distances
-// if graph doesn't contain negative weight cycle.
-// If we get a shorter path, then there
-// is a cycle.
-for (int i = 0; i < E; i++)
-{
-    int u = graph->edge[i].src;
-    int v = graph->edge[i].dest;
-    int weight = graph->edge[i].weight;
-    if (dist[u] != INT_MAX && dist[u] + weight < dist[v])
-        return true;
-}
+    int recur(pair<int, int> c, pair<int, int> p, vector<vector<int>> &matrix)
+    {
 
-return false;
+        int i = c.first;
+        int j = c.second;
+
+        // cout<<i<<" "<<j<<endl;
+
+        if (p.first != -1)
+        {
+
+            if (i <= 0 || i > m || j <= 0 || j > n || matrix[i - 1][j - 1] <= matrix[p.first - 1][p.second - 1])
+            {
+
+                // cout<<i<<m<<j<<n<<" ret 0 "<<endl;
+                return 0;
+            }
+        }
+
+        // dfs
+        int curr = 0;
+        pair<int, int> arr[] = {{i - 1, j}, {i, j - 1}, {i + 1, j}, {i, j + 1}};
+        for (int i = 0; i < 4; i++)
+        {
+            if (arr[i] == p)
+                continue;
+
+            curr = max(recur(arr[i], c, matrix), curr);
+        }
+        return curr + 1;
+    }
+
+    int memo(pair<int, int> c, pair<int, int> p, vector<vector<int>> &matrix, vector<vector<int>> &dp)
+    {
+        int i = c.first;
+        int j = c.second;
+
+        // cout<<i<<" "<<j<<endl;
+
+        if (p.first != -1)
+        {
+
+            if (i <= 0 || i > m || j <= 0 || j > n || matrix[i - 1][j - 1] <= matrix[p.first - 1][p.second - 1])
+            {
+
+                // cout<<i<<m<<j<<n<<" ret 0 "<<endl;
+                return 0;
+            }
+        }
+
+        if (dp[i][j] != -1)
+            return dp[i][j];
+
+        // dfs
+        int curr = 0;
+        pair<int, int> arr[] = {{i - 1, j}, {i, j - 1}, {i + 1, j}, {i, j + 1}};
+        for (int i = 0; i < 4; i++)
+        {
+            if (arr[i] == p)
+                continue;
+
+            curr = max(memo(arr[i], c, matrix, dp), curr);
+        }
+        return dp[i][j] = curr + 1;
+    }
+};
